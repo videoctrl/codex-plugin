@@ -1,0 +1,16 @@
+{
+  "videocontrol": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@videocontrol/mcp@0.2.0",
+      "--stdio"
+    ],
+    "env": {
+      "VIDEOCONTROL_MODE": "local",
+      "VIDEOCONTROL_PREVIEW_PORT": "48731"
+    },
+    "startup_timeout_sec": 20,
+    "tool_timeout_sec": 300
+  }
+}

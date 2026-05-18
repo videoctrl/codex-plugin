@@ -1,0 +1,37 @@
+{
+  "name": "videocontrol",
+  "version": "0.2.0",
+  "description": "Agent-native creative operations for video ads, social share content, timelines, previews, renders, and reproducible creative workflows.",
+  "author": {
+    "name": "VideoControl",
+    "email": "hello@videocontrol.local",
+    "url": "https://videocontrol.local"
+  },
+  "homepage": "https://videocontrol.local",
+  "repository": "https://github.com/videocontrol/videocontrol",
+  "license": "Apache-2.0",
+  "keywords": ["video", "editing", "ffmpeg", "timeline", "mcp", "codex"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "VideoControl for Codex",
+    "shortDescription": "Create, edit, package, and learn from agent-made video ads and social content.",
+    "longDescription": "VideoControl turns Codex into a creative operations layer for video ads and social share content. It creates content objects, keeps project intent, builds briefs, assembles timelines, imports generated media, renders variants, verifies output, packages files for social and ad platforms, and records feedback for future campaigns. The review console reads .videocontrol/review.json and shows stable selection ids for clips, captions, generated assets, variants, and handoffs so later edits can keep the same direction. It does not require a separate backend server for the plugin itself; Codex starts the local VideoControl tool process when the plugin is used. FFmpeg and ffprobe power local previews, contact sheets, and renders. New users can run pnpm videocontrol setup, then pnpm videocontrol doctor to check plugin install, FFmpeg, provider availability, preview app status, marketplace visibility, and the next action. Codex can check provider readiness, save creative preferences, prepare reference assets, improve rough prompts, submit long-running provider jobs, import finished generated assets into content objects, and register local ComfyUI workflows. Provider roles: Local VideoControl handles timelines, imports, FFmpeg previews, renders, contact sheets, and provenance. HeyGen handles avatar, presenter, and talking-head video when its app or CLI is available. Higgsfield handles generated visuals, b-roll, marketing assets, image/video generation, and scoring when its CLI or MCP surface is available. Agent Media handles UGC-style actor videos, SaaS review videos, subtitles, actor browsing, and job downloads when its CLI is available. ComfyUI handles local workflow-based image generation when it is running and a workflow is registered. Postiz handles approved social scheduling, media upload, integration discovery, and analytics when its CLI is available. Meta MCP is a handoff target for ad launch, performance readback, and winner scaling. X/Twitter supports social-bot setup, owner-label verification, drafts, approval handoff, and metrics through the official API only. Provider setup prefers browser-based sign-in, with private local secrets files supported when needed. If a provider is missing, VideoControl should prepare the local plan and handoff instead of pretending an asset was generated. Hermes and other MCP hosts are optional experiments; keep Codex project intent, review selections, and content objects as the record.",
+    "developerName": "VideoControl",
+    "category": "Design",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://videocontrol.local",
+    "privacyPolicyURL": "https://videocontrol.local/privacy",
+    "termsOfServiceURL": "https://videocontrol.local/terms",
+    "defaultPrompt": [
+      "Create a content object for a 30-second product demo ad and make a preview cut.",
+      "Turn this product brief into 6 social video variants with hooks and captions.",
+      "Score this video for ad readiness and make the weakest section stronger."
+    ],
+    "brandColor": "#111111",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png",
+    "screenshots": ["./assets/screenshot-1.png"]
+  }
+}

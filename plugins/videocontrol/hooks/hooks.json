@@ -1,0 +1,36 @@
+{
+  "hooks": [
+    {
+      "name": "first-run-provider-readiness",
+      "description": "Show what Codex can do locally and which creative providers need setup."
+    },
+    {
+      "name": "after-content-object-creation",
+      "description": "Validate that required run files exist after a content object is created."
+    },
+    {
+      "name": "after-state-transition",
+      "description": "Validate that each content object state movement is allowed."
+    },
+    {
+      "name": "after-timeline-mutation",
+      "description": "Validate the timeline after timeline edits."
+    },
+    {
+      "name": "before-render",
+      "description": "Verify source assets before rendering."
+    },
+    {
+      "name": "after-render",
+      "description": "Write render records, contact sheets, and platform checks."
+    },
+    {
+      "name": "after-generated-asset-import",
+      "description": "Refresh the review file so generated assets become selectable review items."
+    },
+    {
+      "name": "before-library-publish",
+      "description": "Run redaction and rights checks before library publishing."
+    }
+  ]
+}
