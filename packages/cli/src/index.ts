@@ -24,6 +24,8 @@ import {
   prepareReferenceAsset,
   providerAuthStatus,
   providerReadinessReminder,
+  ProviderId,
+  ProviderIdSchema,
   providerStatus,
   readCreativeAssetJob,
   readCreativePreferences,
@@ -36,6 +38,60 @@ import { doctorCommand, setupCommand } from "./doctor.js";
 
 const args = process.argv.slice(2);
 const [group, command, ...rest] = args;
+
+const valueFlags = new Set([
+  "--actor",
+  "--app",
+  "--aspect",
+  "--asset",
+  "--bio",
+  "--bookmarks",
+  "--bot",
+  "--callback-url",
+  "--caption-style",
+  "--clicks",
+  "--count",
+  "--customer",
+  "--duration",
+  "--favorite-prompt",
+  "--format",
+  "--impressions",
+  "--input",
+  "--job",
+  "--kind",
+  "--label",
+  "--likes",
+  "--media",
+  "--model",
+  "--name",
+  "--note",
+  "--notes",
+  "--offer",
+  "--owner",
+  "--path",
+  "--pacing",
+  "--platform",
+  "--project",
+  "--prompt",
+  "--provider",
+  "--reference-url",
+  "--replies",
+  "--reposts",
+  "--route",
+  "--safe-zone",
+  "--selection",
+  "--slug",
+  "--source",
+  "--state",
+  "--style",
+  "--style-note",
+  "--text",
+  "--thesis",
+  "--title",
+  "--tweet-id",
+  "--visibility",
+  "--workflow"
+]);
 
 try {
   const result = await dispatch(group, command, rest);
@@ -73,13 +129,13 @@ async function dispatch(group?: string, command?: string, rest: string[] = []) {
         format: readFlag(rest, "--format", "video_ad") as any
       });
     }
-    if (command === "route") return routeContentObject(readFlag(rest, "--project", "."), rest[0], readFlag(rest, "--route") as any);
-    if (command === "transition") return transitionContentState(readFlag(rest, "--project", "."), rest[0], readFlag(rest, "--state") as any);
-    if (command === "archive") return archiveContentObject(readFlag(rest, "--project", "."), rest[0]);
+    if (command === "route") return routeContentObject(readFlag(rest, "--project", "."), readPositional(rest, "slug"), readFlag(rest, "--route") as any);
+    if (command === "transition") return transitionContentState(readFlag(rest, "--project", "."), readPositional(rest, "slug"), readFlag(rest, "--state") as any);
+    if (command === "archive") return archiveContentObject(readFlag(rest, "--project", "."), readPositional(rest, "slug"));
   }
 
   if (group === "brief" && command === "create") {
-    return createWriterContextPacket({ projectDir: readFlag(rest, "--project", "."), slug: rest[0] });
+    return createWriterContextPacket({ projectDir: readFlag(rest, "--project", "."), slug: readPositional(rest, "slug") });
   }
 
   if (group === "intent") {
@@ -156,26 +212,29 @@ async function dispatch(group?: string, command?: string, rest: string[] = []) {
   if (group === "provider") {
     if (command === "readiness") return providerReadinessReminder();
     if (command === "list") return { providers: await allProviderStatuses() };
-    if (command === "status") return providerStatus(rest[0] as any);
+    if (command === "status") {
+      const provider = optionalPositional(rest);
+      return provider ? providerStatus(parseProvider(provider)) : { providers: await allProviderStatuses() };
+    }
     if (command === "auth") {
       const action = rest[0];
-      if (action === "status") return providerAuthStatus(optionalFlag(rest, "--provider") as any, optionalFlag(rest, "--path"));
+      if (action === "status") return providerAuthStatus(optionalProviderFlag(rest, "--provider"), optionalFlag(rest, "--path"));
       if (action === "oauth") {
         return startProviderOAuth({
-          provider: readFlag(rest, "--provider") as any,
+          provider: readProviderFlag(rest, "--provider"),
           callbackUrl: optionalFlag(rest, "--callback-url")
         });
       }
       if (action === "secret-template") {
         return createProviderSecretTemplate({
-          provider: optionalFlag(rest, "--provider") as any,
+          provider: optionalProviderFlag(rest, "--provider"),
           path: optionalFlag(rest, "--path")
         });
       }
     }
     if (command === "generate") {
       return generateCreativeAsset({
-        provider: readFlag(rest, "--provider", "higgsfield") as any,
+        provider: readProviderFlag(rest, "--provider", "higgsfield"),
         kind: readFlag(rest, "--kind", "video") as any,
         prompt: readFlag(rest, "--prompt"),
         model: optionalFlag(rest, "--model"),
@@ -192,7 +251,7 @@ async function dispatch(group?: string, command?: string, rest: string[] = []) {
       return submitCreativeAssetJob({
         projectDir: readFlag(rest, "--project", "."),
         slug: optionalFlag(rest, "--slug"),
-        provider: readFlag(rest, "--provider", "higgsfield") as any,
+        provider: readProviderFlag(rest, "--provider"),
         kind: readFlag(rest, "--kind", "video") as any,
         prompt: readFlag(rest, "--prompt"),
         model: optionalFlag(rest, "--model"),
@@ -224,9 +283,9 @@ async function dispatch(group?: string, command?: string, rest: string[] = []) {
   }
 
   if (group === "library") {
-    if (command === "export") return exportReproBundle({ projectDir: readFlag(rest, "--project", "."), slug: rest[0] });
-    if (command === "publish") return publishToLibrary({ projectDir: readFlag(rest, "--project", "."), slug: rest[0], visibility: readFlag(rest, "--visibility", "private") as any, redact: rest.includes("--redact") });
-    if (command === "remix") return remixLibraryVideo(rest[0]);
+    if (command === "export") return exportReproBundle({ projectDir: readFlag(rest, "--project", "."), slug: readPositional(rest, "slug") });
+    if (command === "publish") return publishToLibrary({ projectDir: readFlag(rest, "--project", "."), slug: readPositional(rest, "slug"), visibility: readFlag(rest, "--visibility", "private") as any, redact: rest.includes("--redact") });
+    if (command === "remix") return remixLibraryVideo(readPositional(rest, "library id"));
   }
 
   if (group === "social-bot") {
@@ -265,7 +324,7 @@ async function dispatch(group?: string, command?: string, rest: string[] = []) {
       });
     }
     if (command === "approve") {
-      return approveDraft(projectDir, rest[0]);
+      return approveDraft(projectDir, readPositional(rest, "draft id"));
     }
     if (command === "publish") {
       return publishDraft({
@@ -304,6 +363,23 @@ function readFlag(args: string[], name: string, fallback?: string) {
   return value;
 }
 
+function readProviderFlag(args: string[], name: string, fallback?: string): ProviderId {
+  return parseProvider(readFlag(args, name, fallback));
+}
+
+function optionalProviderFlag(args: string[], name: string): ProviderId | undefined {
+  const value = optionalFlag(args, name);
+  return value ? parseProvider(value) : undefined;
+}
+
+function parseProvider(value: string): ProviderId {
+  const parsed = ProviderIdSchema.safeParse(value);
+  if (!parsed.success) {
+    throw new Error(`Unknown provider: ${value}. Use one of: ${ProviderIdSchema.options.join(", ")}.`);
+  }
+  return parsed.data;
+}
+
 function optionalFlag(args: string[], name: string) {
   const index = args.indexOf(name);
   if (index === -1) return undefined;
@@ -332,12 +408,17 @@ function readRepeatedFlag(args: string[], name: string) {
   return values;
 }
 
+function readPositional(args: string[], name: string) {
+  const value = optionalPositional(args);
+  if (!value) throw new Error(`Missing ${name}.`);
+  return value;
+}
+
 function optionalPositional(args: string[]) {
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg.startsWith("--")) {
-      const next = args[index + 1];
-      if (next && !next.startsWith("--")) index += 1;
+      if (valueFlags.has(arg)) index += 1;
       continue;
     }
     return arg;

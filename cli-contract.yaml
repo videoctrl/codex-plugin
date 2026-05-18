@@ -21,6 +21,63 @@ commands:
       - pnpm exec videocontrol provider readiness
   - path:
       - videocontrol
+      - provider
+      - status
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Show one provider status, or all provider statuses when no provider is named.
+    args:
+      - name: provider
+        type: string
+        required: false
+        description: Provider to inspect.
+    flags: []
+    output:
+      mode: json
+      shape: ProviderStatusOrList
+    mcpTool: provider_status
+    examples:
+      - pnpm exec videocontrol provider status
+      - pnpm exec videocontrol provider status higgsfield
+  - path:
+      - videocontrol
+      - content
+      - route
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Set the route for a content object.
+    args:
+      - name: slug
+        type: string
+        required: true
+        description: Content object slug.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --route
+        type: string
+        required: true
+        description: Content route.
+    output:
+      mode: json
+      shape: ContentObjectRoute
+    mcpTool: route_content_object
+    examples:
+      - pnpm exec videocontrol content route product-demo --project ./samples/product-demo --route paid_ad_batch
+      - pnpm exec videocontrol content route --project ./samples/product-demo product-demo --route paid_ad_batch
+  - path:
+      - videocontrol
       - preferences
       - show
     owner: videocontrol
@@ -380,3 +437,31 @@ commands:
     mcpTool: update_project_intent
     examples:
       - pnpm exec videocontrol intent update --project ./samples/product-demo --note "Keep the opening direct and product-led."
+  - path:
+      - videocontrol
+      - social-bot
+      - approve
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Mark a social bot draft approved before publishing.
+    args:
+      - name: draftId
+        type: string
+        required: true
+        description: Draft id to approve.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+    output:
+      mode: json
+      shape: SocialBotDraftApproval
+    examples:
+      - pnpm exec videocontrol social-bot approve draft_123 --project ./samples/product-demo
+      - pnpm exec videocontrol social-bot approve --project ./samples/product-demo draft_123

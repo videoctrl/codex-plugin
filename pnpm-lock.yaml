@@ -73,6 +73,10 @@ importers:
       '@videocontrol/social-bot':
         specifier: workspace:*
         version: link:../social-bot
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.12.2)(tsx@4.21.0)
 
   packages/content-os:
     dependencies:

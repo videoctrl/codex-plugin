@@ -129,6 +129,10 @@ export async function createContentObject(input: {
   const paths = contentOsPaths(input.projectDir);
   const now = new Date().toISOString();
   const slug = input.slug ?? slugify(input.title);
+  const existing = (await listContentObjects(input.projectDir, "all")).find((entry) => entry.contentObject.slug === slug);
+  if (existing) {
+    throw new Error(`Content object already exists: ${slug}`);
+  }
   const runDir = join(paths.runsActiveDir, `${datePrefix()}-${slug}`);
   await mkdir(join(runDir, "variants", "v001"), { recursive: true });
   await mkdir(join(runDir, "renders"), { recursive: true });

@@ -98,4 +98,10 @@ describe("timeline versioning", () => {
     expect(result.timeline?.version).toBe("v0002");
     expect(result.timeline?.updatedAt).toBe("2026-05-13T00:01:00.000Z");
   });
+
+  it("rejects patch paths that cannot be applied", () => {
+    const result = applyTimelinePatch(sampleTimeline(), [{ op: "replace", path: "/missing/0", value: "x" }]);
+    expect(result.accepted).toBe(false);
+    expect(result.validation.errors).toEqual(["Timeline patch operation 1 could not be applied."]);
+  });
 });

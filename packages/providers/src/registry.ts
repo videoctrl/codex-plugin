@@ -7,9 +7,11 @@ import { postizStatus } from "./adapters/postiz/adapter.js";
 import { metaStatus } from "./adapters/meta/handoff.js";
 import { comfyUiStatus, generateComfyUiAsset } from "./adapters/comfyui/adapter.js";
 import { assertSafeRemoteReferenceUrl, isRemoteReference } from "./urlSafety.js";
+import { ProviderIdSchema } from "./types.js";
 
 export async function providerStatus(provider: ProviderId) {
-  switch (provider) {
+  const parsedProvider = ProviderIdSchema.parse(provider);
+  switch (parsedProvider) {
     case "local":
       return localStatus();
     case "heygen":

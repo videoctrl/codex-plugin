@@ -24,7 +24,18 @@ export function applyTimelinePatch(
   options: { dryRun?: boolean; now?: string } = {}
 ): TimelinePatchResult {
   const workingCopy = structuredClone(timeline) as Timeline;
-  const patched = applyPatch(workingCopy, patch as Operation[], true, false).newDocument;
+  let patched: Timeline;
+  try {
+    patched = applyPatch(workingCopy, patch as Operation[], true, false).newDocument as Timeline;
+  } catch (error) {
+    return {
+      accepted: false,
+      validation: {
+        valid: false,
+        errors: [patchErrorMessage(error)]
+      }
+    };
+  }
   const versioned = options.dryRun ? patched : withNewVersion(patched, options.now);
   const validation = validateTimeline(versioned);
 
@@ -33,4 +44,12 @@ export function applyTimelinePatch(
     timeline: validation.valid ? validation.timeline : undefined,
     validation
   };
+}
+
+function patchErrorMessage(error: unknown) {
+  const index = typeof error === "object" && error !== null && "index" in error ? Number((error as { index?: unknown }).index) : undefined;
+  if (index !== undefined && Number.isInteger(index)) {
+    return `Timeline patch operation ${index + 1} could not be applied.`;
+  }
+  return "Timeline patch could not be applied.";
 }

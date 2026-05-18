@@ -14,6 +14,14 @@ describe("Content OS", () => {
     expect(created.contentObject.route).toBe("paid_ad_batch");
   });
 
+  it("rejects duplicate content object slugs", async () => {
+    const projectDir = await mkdtemp(join(tmpdir(), "vc-content-duplicate-"));
+    await createContentObject({ projectDir, title: "Same Title", format: "short_video" });
+    await expect(createContentObject({ projectDir, title: "Same Title", format: "short_video" })).rejects.toThrow(
+      "Content object already exists: same-title"
+    );
+  });
+
   it("rejects invalid state transitions", async () => {
     const projectDir = await mkdtemp(join(tmpdir(), "vc-state-"));
     await createContentOs(projectDir);
