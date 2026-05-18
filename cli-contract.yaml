@@ -1,0 +1,382 @@
+schemaVersion: "0.1"
+product: videocontrol
+commands:
+  - path:
+      - videocontrol
+      - provider
+      - readiness
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Show which creative providers are ready and what can still be done locally inside Codex.
+    flags: []
+    output:
+      mode: json
+      shape: ProviderReadiness
+    mcpTool: provider_readiness_reminder
+    examples:
+      - pnpm exec videocontrol provider readiness
+  - path:
+      - videocontrol
+      - preferences
+      - show
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Read saved creative preferences for provider choice, platform targets, caption style, pacing, and reusable visual direction.
+    flags: []
+    output:
+      mode: json
+      shape: CreativePreferences
+    mcpTool: get_creative_preferences
+    examples:
+      - pnpm exec videocontrol preferences show
+  - path:
+      - videocontrol
+      - preferences
+      - update
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Update saved creative preferences without storing secrets in a project.
+    flags:
+      - name: --provider
+        type: string
+        required: false
+        description: Preferred creative provider.
+      - name: --platform
+        type: string
+        required: false
+        repeatable: true
+        description: Platform target to remember.
+      - name: --aspect
+        type: string
+        required: false
+        description: Preferred aspect ratio.
+      - name: --caption-style
+        type: string
+        required: false
+        description: Caption direction to remember.
+      - name: --pacing
+        type: string
+        required: false
+        description: Pacing direction to remember.
+      - name: --style-note
+        type: string
+        required: false
+        repeatable: true
+        description: Visual direction to remember.
+      - name: --safe-zone
+        type: string
+        required: false
+        repeatable: true
+        description: Safe-zone direction to remember.
+      - name: --favorite-prompt
+        type: string
+        required: false
+        repeatable: true
+        description: Reusable generation prompt to remember.
+    output:
+      mode: json
+      shape: CreativePreferences
+    mcpTool: update_creative_preferences
+    examples:
+      - pnpm exec videocontrol preferences update --provider higgsfield --platform meta-reels --aspect 9:16 --caption-style "large proof-led captions"
+  - path:
+      - videocontrol
+      - reference
+      - prepare
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Inspect and register a local or remote reference asset before sending it to a creative provider.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --input
+        type: string
+        required: true
+        description: Local file path or safe remote reference URL.
+      - name: --no-copy
+        type: boolean
+        required: false
+        description: Register a local file in place instead of copying it into the project reference folder.
+    output:
+      mode: json
+      shape: PreparedReferenceAsset
+    mcpTool: prepare_reference_asset
+    examples:
+      - pnpm exec videocontrol reference prepare --project ./samples/product-demo --input ./product-shot.png
+  - path:
+      - videocontrol
+      - prompt
+      - enhance
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Turn project intent, preferences, platform, and a rough note into a provider-ready creative prompt.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --prompt
+        type: string
+        required: true
+        description: Rough creative request.
+      - name: --kind
+        type: string
+        required: false
+        default: image
+        description: Asset kind to plan.
+      - name: --platform
+        type: string
+        required: false
+        description: Target platform.
+      - name: --selection
+        type: string
+        required: false
+        description: Review selection id to anchor the prompt.
+    output:
+      mode: json
+      shape: AssetPromptPlan
+    mcpTool: enhance_asset_prompt
+    examples:
+      - pnpm exec videocontrol prompt enhance --project ./samples/product-demo --platform meta-reels --prompt "make a product hero shot"
+  - path:
+      - videocontrol
+      - provider
+      - submit
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Submit a creative generation job and record the provider job id so Codex can check or import it later.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --slug
+        type: string
+        required: false
+        description: Content object slug to associate with the job.
+      - name: --provider
+        type: string
+        required: true
+        description: Creative provider to use.
+      - name: --kind
+        type: string
+        required: false
+        default: video
+        description: Asset kind to generate.
+      - name: --prompt
+        type: string
+        required: true
+        description: Provider-ready generation prompt.
+      - name: --workflow
+        type: string
+        required: false
+        description: ComfyUI workflow name when using the ComfyUI provider.
+      - name: --input
+        type: string
+        required: false
+        description: Prepared local reference path.
+      - name: --reference-url
+        type: string
+        required: false
+        description: Safe remote reference URL.
+    output:
+      mode: json
+      shape: CreativeAssetJob
+    mcpTool: submit_creative_asset_job
+    examples:
+      - pnpm exec videocontrol provider submit --project ./samples/product-demo --slug product-demo --provider higgsfield --kind image --prompt "Proof-led product hero image"
+  - path:
+      - videocontrol
+      - provider
+      - job
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Read a recorded creative generation job.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --job
+        type: string
+        required: true
+        description: Recorded VideoControl job id.
+    output:
+      mode: json
+      shape: CreativeAssetJob
+    mcpTool: get_creative_asset_job
+    examples:
+      - pnpm exec videocontrol provider job --project ./samples/product-demo --job job_123
+  - path:
+      - videocontrol
+      - provider
+      - import-job
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Import a completed or manually downloaded provider job into a content object and make it visible in review.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --slug
+        type: string
+        required: true
+        description: Content object slug.
+      - name: --job
+        type: string
+        required: true
+        description: Recorded VideoControl job id.
+      - name: --asset
+        type: string
+        required: false
+        description: Local asset path when the provider result has been downloaded manually.
+    output:
+      mode: json
+      shape: ImportedCreativeAssetJob
+    mcpTool: import_creative_asset_job
+    examples:
+      - pnpm exec videocontrol provider import-job --project ./samples/product-demo --slug product-demo --job job_123 --asset ./generated.png
+  - path:
+      - videocontrol
+      - provider
+      - comfyui
+      - import
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Register a local ComfyUI workflow that VideoControl can submit later.
+    flags:
+      - name: --name
+        type: string
+        required: true
+        description: Workflow name.
+      - name: --workflow
+        type: string
+        required: true
+        description: Path to ComfyUI API-format workflow JSON.
+    output:
+      mode: json
+      shape: ComfyUiWorkflow
+    mcpTool: import_comfyui_workflow
+    examples:
+      - pnpm exec videocontrol provider comfyui import --name product-hero --workflow ./workflow.json
+  - path:
+      - videocontrol
+      - provider
+      - comfyui
+      - list
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: List registered ComfyUI workflows.
+    flags: []
+    output:
+      mode: json
+      shape: ComfyUiWorkflowList
+    mcpTool: list_comfyui_workflows
+    examples:
+      - pnpm exec videocontrol provider comfyui list
+  - path:
+      - videocontrol
+      - provider
+      - comfyui
+      - view
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Read one registered ComfyUI workflow.
+    flags:
+      - name: --name
+        type: string
+        required: true
+        description: Workflow name.
+    output:
+      mode: json
+      shape: ComfyUiWorkflow
+    mcpTool: get_comfyui_workflow
+    examples:
+      - pnpm exec videocontrol provider comfyui view --name product-hero
+  - path:
+      - videocontrol
+      - intent
+      - update
+    owner: videocontrol
+    execution: local-runtime
+    auth: local
+    audience:
+      - agent
+      - operator
+    description: Record a review note in the project intent pack so later work keeps the same creative direction.
+    flags:
+      - name: --project
+        type: string
+        required: false
+        default: "."
+        description: VideoControl project folder.
+      - name: --note
+        type: string
+        required: true
+        description: Plain-language review note to carry forward.
+      - name: --selection
+        type: string
+        required: false
+        description: Review selection id, such as a clip, caption, variant, or handoff id.
+      - name: --source
+        type: string
+        required: false
+        description: Where the note came from.
+    output:
+      mode: json
+      shape: ProjectIntentUpdate
+    mcpTool: update_project_intent
+    examples:
+      - pnpm exec videocontrol intent update --project ./samples/product-demo --note "Keep the opening direct and product-led."

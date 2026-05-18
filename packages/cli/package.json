@@ -1,0 +1,20 @@
+{
+  "name": "@videocontrol/cli",
+  "version": "0.2.0",
+  "type": "module",
+  "bin": {
+    "videocontrol": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@videocontrol/content-os": "workspace:*",
+    "@videocontrol/creative-ops": "workspace:*",
+    "@videocontrol/library": "workspace:*",
+    "@videocontrol/providers": "workspace:*",
+    "@videocontrol/social-bot": "workspace:*"
+  }
+}

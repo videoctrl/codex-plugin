@@ -1,0 +1,14 @@
+{
+  "name": "@videocontrol/library",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@videocontrol/content-os": "workspace:*",
+    "zod": "^4.1.12"
+  }
+}
