@@ -8,7 +8,7 @@
     "env": {
       "VIDEOCONTROL_MODE": "local",
       "VIDEOCONTROL_PREVIEW_PORT": "48731",
-      "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:/Users/sean/Library/pnpm:/Users/sean/.cargo/bin:/Users/sean/.foundry/bin:/Users/sean/.local/bin:/Users/sean/.bun/bin:/Users/sean/.codex-orchestrator/bin:/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/pmk/env/global/bin:/usr/local/go/bin:/Applications/Codex.app/Contents/Resources"
+      "PATH": "__LOCAL_PATH__"
     },
     "startup_timeout_sec": 20,
     "tool_timeout_sec": 300

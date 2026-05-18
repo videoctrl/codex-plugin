@@ -13,11 +13,11 @@ Codex does not yet have a self-publishing path for this plugin. Until that exist
 ### 1. Get the Code
 
 ```bash
-git clone <VIDEOCONTROL_REPO_URL> videocontrol
+git clone https://github.com/videoctrl/codex-plugin.git videocontrol
 cd videocontrol
 ```
 
-Replace `<VIDEOCONTROL_REPO_URL>` with the real repo URL.
+If you are working from a fork, use your fork URL instead.
 
 ### 2. Install and Build
 
@@ -29,7 +29,54 @@ pnpm build
 
 VideoControl needs Node.js, pnpm, FFmpeg, and ffprobe. The readiness check below will tell you if anything is missing.
 
-### 3. Prepare the Local Plugin
+### 3. Optional Local Settings
+
+VideoControl works locally without API keys. Provider keys are only needed when you want live provider generation, scheduling, or provider handoff features.
+
+The repo includes [.env.example](.env.example). If you want a local `.env` file for your own shell tooling, copy it at the repo root:
+
+```bash
+cp .env.example .env
+```
+
+Do not commit `.env`. It is ignored by git.
+
+Recommended `.env.example` shape:
+
+```bash
+# Local VideoControl defaults
+VIDEOCONTROL_MODE=local
+VIDEOCONTROL_PREVIEW_PORT=48731
+
+# Optional file-location overrides
+VIDEOCONTROL_PROVIDER_SECRETS=
+VIDEOCONTROL_PREFERENCES=
+VIDEOCONTROL_COMFYUI_WORKFLOWS=
+
+# Optional local ComfyUI endpoint
+COMFYUI_URL=http://127.0.0.1:8188
+
+# Optional provider keys for provider CLIs that support shell keys
+AGENT_MEDIA_API_KEY=
+POSTIZ_API_URL=
+POSTIZ_API_KEY=
+```
+
+For provider API keys, the safer default is the private VideoControl secrets file outside the repo:
+
+```bash
+pnpm exec videocontrol provider auth secret-template
+```
+
+That creates:
+
+```text
+~/.videocontrol/secrets/providers.local.json
+```
+
+Put optional provider keys there when a provider needs manually supplied credentials. Keep that file private and outside git. Browser sign-in is still preferred for HeyGen, Higgsfield, Agent Media, Postiz, and Meta when available.
+
+### 4. Prepare the Local Plugin
 
 ```bash
 pnpm plugin:local
@@ -44,7 +91,7 @@ If the readiness check says Codex still cannot see the marketplace, run this fro
 codex plugin marketplace add "$(pwd)"
 ```
 
-### 4. Install in Codex
+### 5. Install in Codex
 
 1. Restart Codex.
 2. Open Plugins.
@@ -58,7 +105,7 @@ Try this first:
 @videocontrol check provider status, create a test video project, render a tiny preview, and tell me what is ready.
 ```
 
-### 5. Check Readiness Later
+### 6. Check Readiness Later
 
 ```bash
 pnpm videocontrol doctor

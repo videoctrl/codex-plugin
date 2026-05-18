@@ -8,7 +8,7 @@ const templatePath = resolve(pluginRoot, mode === "local" ? ".mcp.local.template
 const outputPath = resolve(pluginRoot, ".mcp.json");
 
 const template = await readFile(templatePath, "utf8");
-const rendered = template.replaceAll("__ABS_REPO_ROOT__", repoRoot);
+const rendered = renderTemplate(template);
 await writeFile(outputPath, rendered, "utf8");
 
 console.log(`Wrote ${outputPath} for ${mode} use.`);
@@ -20,4 +20,15 @@ function parseMode(args: string[]) {
     throw new Error("Use --mode local or --mode publish.");
   }
   return value;
+}
+
+function renderTemplate(template: string) {
+  return template
+    .replaceAll("__ABS_REPO_ROOT__", repoRoot)
+    .replaceAll("__LOCAL_PATH__", localToolPath());
+}
+
+function localToolPath() {
+  const path = process.env.PATH ?? "";
+  return ["/opt/homebrew/bin", "/opt/homebrew/sbin", "/usr/local/bin", path].filter(Boolean).join(":");
 }

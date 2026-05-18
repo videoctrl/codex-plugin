@@ -221,7 +221,7 @@ async function safeProviderStatuses() {
 async function writeLocalMcpConfig() {
   const templatePath = resolve(pluginRoot, ".mcp.local.template.json");
   const template = await readFile(templatePath, "utf8");
-  await writeFile(localMcpPath, template.replaceAll("__ABS_REPO_ROOT__", repoRoot), "utf8");
+  await writeFile(localMcpPath, renderLocalMcpTemplate(template), "utf8");
 }
 
 async function writeLocalMarketplace() {
@@ -334,4 +334,15 @@ function firstLine(text: string) {
 
 function messageFrom(error: unknown) {
   return error instanceof Error ? error.message : String(error);
+}
+
+function renderLocalMcpTemplate(template: string) {
+  return template
+    .replaceAll("__ABS_REPO_ROOT__", repoRoot)
+    .replaceAll("__LOCAL_PATH__", localToolPath());
+}
+
+function localToolPath() {
+  const path = process.env.PATH ?? "";
+  return ["/opt/homebrew/bin", "/opt/homebrew/sbin", "/usr/local/bin", path].filter(Boolean).join(":");
 }

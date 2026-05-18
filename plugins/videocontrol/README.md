@@ -7,7 +7,7 @@ VideoControl helps Codex create local video projects, inspect media, build timel
 Until Codex has a self-publishing path for this plugin, install it from a cloned repo:
 
 ```bash
-git clone <VIDEOCONTROL_REPO_URL> videocontrol
+git clone https://github.com/videoctrl/codex-plugin.git videocontrol
 cd videocontrol
 corepack enable
 pnpm install
@@ -16,7 +16,7 @@ pnpm plugin:local
 pnpm check:prereqs
 ```
 
-Replace `<VIDEOCONTROL_REPO_URL>` with the real repo URL.
+If you are working from a fork, use your fork URL instead.
 
 If Codex still cannot see the local marketplace, run this from inside the cloned repo:
 
@@ -33,6 +33,14 @@ Try this first:
 ```
 
 VideoControl does not need you to run a backend server for the plugin itself. Codex starts the local VideoControl tool process when the plugin is used. FFmpeg and ffprobe are required for previews, contact sheets, and renders.
+
+VideoControl works locally without API keys. Optional provider keys should stay out of project files. Use browser sign-in when available, or create the private provider secrets file with:
+
+```bash
+pnpm exec videocontrol provider auth secret-template
+```
+
+That file lives at `~/.videocontrol/secrets/providers.local.json`. The repo also includes `.env.example` for local shell settings such as preview port, ComfyUI URL, Agent Media key, or Postiz key. Copy it to `.env` only for your own machine, and never commit `.env`.
 
 VideoControl stores project direction in `.videocontrol/intent/` and writes `.videocontrol/review.json` for the preview console. Agents should read those files before later edits so clips, captions, generated assets, variants, and handoffs keep the same direction.
 
