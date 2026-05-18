@@ -1,0 +1,32 @@
+{
+  "name": "videocontrol",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.2",
+  "scripts": {
+    "build": "pnpm -r --sort build",
+    "check:prereqs": "tsx scripts/check-prereqs.ts",
+    "create:samples": "tsx scripts/create-samples.ts",
+    "dev:preview": "pnpm --filter @videocontrol/preview dev",
+    "mcp": "node packages/mcp-server/dist/index.js --stdio",
+    "plugin:local": "tsx scripts/build-plugin.ts --mode local && tsx scripts/install-local-marketplace.ts",
+    "plugin:publish": "tsx scripts/build-plugin.ts --mode publish",
+    "smoke": "tsx scripts/smoke-test.ts",
+    "smoke:creative-os": "tsx scripts/smoke-creative-os.ts",
+    "smoke:social-bot": "tsx scripts/smoke-social-bot.ts",
+    "test": "pnpm -r --if-present test",
+    "videocontrol": "tsx packages/cli/src/index.ts",
+    "visual:guide": "tsx scripts/create-visual-guide.ts"
+  },
+  "dependencies": {
+    "@videocontrol/cli": "workspace:*"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
