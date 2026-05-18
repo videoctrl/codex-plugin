@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "0.1",
+  "projectId": "founder-demo",
+  "name": "Founder Demo",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationSec": 6,
+  "version": "v0001",
+  "createdAt": "2026-05-13T00:00:00.000Z",
+  "updatedAt": "2026-05-13T00:00:00.000Z",
+  "assets": [
+    {
+      "id": "a_demo",
+      "kind": "video",
+      "path": "raw/founder-interview.mp4",
+      "durationSec": 6,
+      "width": 1280,
+      "height": 720,
+      "fps": 30
+    }
+  ],
+  "tracks": [
+    { "id": "v1", "kind": "video", "name": "Main Video", "order": 1 },
+    { "id": "a1", "kind": "audio", "name": "Main Audio", "order": 2 },
+    { "id": "t1", "kind": "text", "name": "Text", "order": 3 }
+  ],
+  "clips": [
+    {
+      "id": "c_intro",
+      "assetId": "a_demo",
+      "trackId": "v1",
+      "startSec": 0,
+      "durationSec": 6,
+      "sourceInSec": 0,
+      "sourceOutSec": 6
+    }
+  ],
+  "textClips": [
+    {
+      "id": "txt_hook",
+      "kind": "text",
+      "trackId": "t1",
+      "text": "A sharper product demo",
+      "startSec": 0.5,
+      "durationSec": 2.5,
+      "style": { "preset": "bold" }
+    }
+  ]
+}

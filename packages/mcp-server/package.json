@@ -1,0 +1,26 @@
+{
+  "name": "@videocontrol/mcp",
+  "version": "0.2.0",
+  "type": "module",
+  "bin": {
+    "videocontrol-mcp": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@videocontrol/content-os": "workspace:*",
+    "@videocontrol/creative-ops": "workspace:*",
+    "@videocontrol/library": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@videocontrol/media": "workspace:*",
+    "@videocontrol/providers": "workspace:*",
+    "@videocontrol/renderer": "workspace:*",
+    "@videocontrol/social-bot": "workspace:*",
+    "@videocontrol/timeline": "workspace:*",
+    "fast-json-patch": "^3.1.1",
+    "zod": "^4.1.12"
+  }
+}
